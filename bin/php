@@ -12,7 +12,7 @@ docker run \
     -v /etc/passwd:/etc/passwd:ro \
     -v /etc/php:/etc/php:ro \
     -v /etc/localtime:/etc/localtime:ro \
-    -v /usr/local/bin:/usr/local/bin:ro \
+    -v /usr/local/bin:/usr/local/bin \
     -v "$HOME:$HOME" \
     -v "$PWD:$PWD" \
     -w "$PWD" \

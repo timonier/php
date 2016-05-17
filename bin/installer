@@ -27,6 +27,7 @@ case $1 in
         mkdir -p /etc/php/conf.d
 
         install /etc/php/conf.d/00_bz2.ini
+        install /etc/php/conf.d/00_gd.ini
         install /etc/php/conf.d/00_intl.ini
         install /etc/php/conf.d/00_mysql.ini
         install /etc/php/conf.d/00_opcache.ini

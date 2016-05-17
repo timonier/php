@@ -13,6 +13,11 @@ RUN set -x \
     && mv /usr/local/etc/php /etc/php \
     && ln -s /etc/php /usr/local/etc/php \
 
+    # Install packages
+
+    && apt-get install -y --no-install-recommends \
+           git \
+
     # Install php-bz2
 
     && apt-get install -y --no-install-recommends \
@@ -25,6 +30,16 @@ RUN set -x \
     && apt-get install -y --no-install-recommends \
            libcurl4-openssl-dev \
     && docker-php-ext-install curl \
+
+    # Install php-gd
+
+    && apt-get install -y --no-install-recommends \
+           libfreetype6-dev \
+           libjpeg62-turbo-dev \
+           libpng12-dev \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install gd \
+    && mv /etc/php/conf.d/docker-php-ext-gd.ini /etc/php/conf.d/00_gd.ini \
 
     # Install php-intl
 
