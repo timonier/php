@@ -8,7 +8,10 @@ RUN set -x \
 
     # Prepare system
 
+    && export DEBIAN_FRONTEND=noninteractive \
+
     && apt-get update \
+
     && mv /usr/local/bin/* /usr/bin/ \
     && mv /usr/local/etc/php /etc/php \
     && ln -s /etc/php /usr/local/etc/php \
@@ -17,6 +20,7 @@ RUN set -x \
 
     && apt-get install -y --no-install-recommends \
            git \
+           openssh-client \
 
     # Install php-bz2
 
