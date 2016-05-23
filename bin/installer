@@ -29,10 +29,11 @@ case $1 in
         install /etc/php/conf.d/00_bz2.ini
         install /etc/php/conf.d/00_gd.ini
         install /etc/php/conf.d/00_intl.ini
+        install /etc/php/conf.d/00_gnupg.ini
         install /etc/php/conf.d/00_mysql.ini
         install /etc/php/conf.d/00_opcache.ini
         install /etc/php/conf.d/00_pdo_mysql.ini
-        install /etc/php/conf.d/00_pgsql.ini
+        install /etc/php/conf.d/00_pdo_pgsql.ini
         install /etc/php/conf.d/00_pgsql.ini
         install /etc/php/conf.d/00_zip.ini
 

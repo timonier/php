@@ -45,6 +45,13 @@ RUN set -x \
     && docker-php-ext-install gd \
     && mv /etc/php/conf.d/docker-php-ext-gd.ini /etc/php/conf.d/00_gd.ini \
 
+    # Install php-gnupg
+
+    && apt-get install -y --no-install-recommends \
+           libgpgme11-dev \
+    && pecl install gnupg \
+    && echo "extension=gnupg.so" > /etc/php/conf.d/00_gnupg.ini \
+
     # Install php-intl
 
     && apt-get install -y --no-install-recommends \
