@@ -22,6 +22,11 @@ RUN set -x \
            git \
            openssh-client \
 
+    # Install php-bcmath
+
+    && docker-php-ext-install bcmath \
+    && mv /etc/php/conf.d/docker-php-ext-bcmath.ini /etc/php/conf.d/00_bcmath.ini \
+
     # Install php-bz2
 
     && apt-get install -y --no-install-recommends \
