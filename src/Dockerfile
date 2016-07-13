@@ -2,6 +2,7 @@ FROM php:5.5.35-cli
 MAINTAINER Morgan Auchede <morgan.auchede@gmail.com>
 
 ENV \
+    GOSU_VERSION=1.7 \
     PHP_PEAR_PHP_BIN=/usr/bin/php
 
 RUN set -x \
@@ -22,10 +23,20 @@ RUN set -x \
            git \
            openssh-client \
 
+    # Install gosu
+
+    && curl -sLo /usr/sbin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64"  \
+    && chmod +x /usr/sbin/gosu \
+
     # Install php-bcmath
 
     && docker-php-ext-install bcmath \
     && mv /etc/php/conf.d/docker-php-ext-bcmath.ini /etc/php/conf.d/00_bcmath.ini \
+
+    # Install php-blackfire
+
+    && curl -A "Docker" -sL "https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;")" | tar fxz - -C /tmp \
+    && mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so \
 
     # Install php-bz2
 
@@ -84,6 +95,11 @@ RUN set -x \
     && echo "zend_extension=opcache.so" > /etc/php/conf.d/docker-php-ext-opcache.ini \
     && mv /etc/php/conf.d/docker-php-ext-opcache.ini /etc/php/conf.d/00_opcache.ini \
 
+    # Install php-pcntl
+
+    && docker-php-ext-install pcntl \
+    && mv /etc/php/conf.d/docker-php-ext-pcntl.ini /etc/php/conf.d/00_pcntl.ini \
+
     # Install php-pgsql
 
     && apt-get install -y --no-install-recommends \
@@ -109,4 +125,6 @@ RUN set -x \
            /tmp/* \
            /var/lib/apt/lists/*
 
-ENTRYPOINT [ "/usr/bin/php" ]
+COPY ./rootfs /
+
+ENTRYPOINT [ "/entrypoint.sh" ]
