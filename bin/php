@@ -6,14 +6,11 @@ docker run \
     -t=$([ -t 0 ] && echo "true" || echo "false") \
     -v /etc/group:/etc/group:ro \
     -v /etc/passwd:/etc/passwd:ro \
-    -v /etc/php:/etc/php:ro \
-    -v /etc/localtime:/etc/localtime:ro \
     -v /run:/run \
     -v /tmp:/tmp \
-    -v /usr/local/bin:/usr/local/bin \
     -v "$HOME:$HOME" \
     -v "$PWD:$PWD" \
     -w "$PWD" \
     --net host \
     --rm \
-    ${IMAGE:-mauchede/php}:${TAG:-5.5.35} "$@"
+    ${IMAGE:-timonier/php}:${TAG:-5.5.38} gosu $USER php "$@"
