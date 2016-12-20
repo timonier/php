@@ -1,4 +1,4 @@
 #!/bin/sh
 cd "`dirname "$0"`/../src"
 
-docker build -t ${IMAGE:-timonier/php}:${TAG:-5.6.29} .
+docker build -t ${IMAGE:-timonier/php}:${TAG:-7.0.14} .

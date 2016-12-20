@@ -13,4 +13,4 @@ docker run \
     -w "$PWD" \
     --net host \
     --rm \
-    ${IMAGE:-timonier/php}:${TAG:-5.6.29} gosu $USER php "$@"
+    ${IMAGE:-timonier/php}:${TAG:-7.0.14} gosu $USER php "$@"

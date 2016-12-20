@@ -1,12 +1,14 @@
-FROM debian:wheezy-slim
+FROM debian:jessie-slim
 MAINTAINER Morgan Auchede <morgan.auchede@gmail.com>
 
 ENV \
     GOSU_VERSION=1.7 \
-    PHP_VERSION=5.6.29 \
-    PHP_APCU_VERSION=1:4.0.7 \
-    PHP_REDIS_VERSION=1:2.2.7 \
-    PHP_XDEBUG_VERSION=1:2.4.0
+    PHP_VERSION=7.0.14 \
+    PHP_APCU_VERSION=5.1.7 \
+    PHP_GNUPG_VERSION=1.4.0 \
+    PHP_IGBINARY_VERSION=2.0.0 \
+    PHP_REDIS_VERSION=3.0.0 \
+    PHP_XDEBUG_VERSION=1:2.5.0
 
 RUN set -x \
 
@@ -21,10 +23,8 @@ RUN set -x \
 
     # Prepare sources
 
-    && echo "deb http://packages.dotdeb.org wheezy all" >> /etc/apt/sources.list.d/dotdeb.org.list \
-    && echo "deb http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.org.list \
-    && echo "deb-src http://packages.dotdeb.org wheezy all" >> /etc/apt/sources.list.d/dotdeb.org.list \
-    && echo "deb-src http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.org.list \
+    && echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list.d/dotdeb.org.list \
+    && echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list.d/dotdeb.org.list \
     && wget -O- http://www.dotdeb.org/dotdeb.gpg | apt-key add - \
 
     && echo "deb http://packages.blackfire.io/debian any main" > /etc/apt/sources.list.d/blackfire.list \
@@ -39,37 +39,42 @@ RUN set -x \
 
     # Install packages
 
-    && BUILD_DEPS="libgpgme11-dev php5-dev=$PHP_VERSION* pkg-php-tools" \
+    && BUILD_DEPS="libgpgme11-dev php7.0-dev=$PHP_VERSION* pkg-php-tools" \
 
     && apt-get install -y --no-install-recommends \
            $BUILD_DEPS \
            blackfire-php \
            libgpgme11 \
-           php5-apcu=$PHP_APCU_VERSION* \
-           php5-cli=$PHP_VERSION* \
-           php5-curl=$PHP_VERSION* \
-           php5-fpm=$PHP_VERSION* \
-           php5-gd=$PHP_VERSION* \
-           php5-intl=$PHP_VERSION* \
-           php5-mysql=$PHP_VERSION* \
-           php5-pgsql=$PHP_VERSION* \
-           php5-readline=$PHP_VERSION* \
-           php5-redis=$PHP_REDIS_VERSION* \
-           php5-sqlite=$PHP_VERSION* \
-           php5-xdebug=$PHP_XDEBUG_VERSION* \
+           php7.0-apcu=$PHP_APCU_VERSION* \
+           php7.0-bcmath=$PHP_VERSION* \
+           php7.0-cli=$PHP_VERSION* \
+           php7.0-curl=$PHP_VERSION* \
+           php7.0-fpm=$PHP_VERSION* \
+           php7.0-gd=$PHP_VERSION* \
+           php7.0-igbinary=$PHP_IGBINARY_VERSION* \
+           php7.0-intl=$PHP_VERSION* \
+           php7.0-mbstring=$PHP_VERSION* \
+           php7.0-mysql=$PHP_VERSION* \
+           php7.0-pgsql=$PHP_VERSION* \
+           php7.0-readline=$PHP_VERSION* \
+           php7.0-redis=$PHP_REDIS_VERSION* \
+           php7.0-sqlite=$PHP_VERSION* \
+           php7.0-xdebug=$PHP_XDEBUG_VERSION* \
+           php7.0-xml=$PHP_VERSION* \
+           php7.0-zip=$PHP_VERSION* \
 
-    # Compile php5-gnupg
+    # Compile php7.0-gnupg
 
-    && pecl install gnupg \
-    && echo "extension=gnupg.so" > /etc/php5/mods-available/gnupg.ini \
-    && ln -s /etc/php5/mods-available/gnupg.ini /etc/php5/cli/conf.d/20-gnupg.ini \
-    && ln -s /etc/php5/mods-available/gnupg.ini /etc/php5/fpm/conf.d/20-gnupg.ini \
+    && pecl install gnupg-$PHP_GNUPG_VERSION \
+    && echo "extension=gnupg.so" > /etc/php/7.0/mods-available/gnupg.ini \
+    && ln -s /etc/php/7.0/mods-available/gnupg.ini /etc/php/7.0/cli/conf.d/20-gnupg.ini \
+    && ln -s /etc/php/7.0/mods-available/gnupg.ini /etc/php/7.0/fpm/conf.d/20-gnupg.ini \
 
     # Disable xdebug
 
     && rm \
-          /etc/php5/cli/conf.d/20-xdebug.ini \
-          /etc/php5/fpm/conf.d/20-xdebug.ini \
+          /etc/php/7.0/cli/conf.d/20-xdebug.ini \
+          /etc/php/7.0/fpm/conf.d/20-xdebug.ini \
 
     # Clean
 
