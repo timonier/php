@@ -43,11 +43,11 @@ php -d zend_extension=xdebug.so -m | grep "xdebug"
 # xdebug
 ```
 
-__Note__: By default, the version `5.5.38` will be used. To change the version, define the `TAG` before the command. For example:
+__Note__: By default, the version `5.6.29` will be used. To change the version, define the `TAG` before the command. For example:
 
 ```sh
 php -v
-# PHP 5.5.38-1~dotdeb+7.1 (cli) (built: Jul 21 2016 18:33:48)
+# PHP 5.6.29-1~dotdeb+7.1 (cli) (built: Dec  9 2016 16:30:46)
 # ...
 
 TAG="5.5.38" php -v

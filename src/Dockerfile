@@ -3,7 +3,10 @@ MAINTAINER Morgan Auchede <morgan.auchede@gmail.com>
 
 ENV \
     GOSU_VERSION=1.7 \
-    PHP_VERSION=5.5.38
+    PHP_VERSION=5.6.29 \
+    PHP_APCU_VERSION=1:4.0.7 \
+    PHP_REDIS_VERSION=1:2.2.7 \
+    PHP_XDEBUG_VERSION=1:2.4.0
 
 RUN set -x \
 
@@ -19,9 +22,9 @@ RUN set -x \
     # Prepare sources
 
     && echo "deb http://packages.dotdeb.org wheezy all" >> /etc/apt/sources.list.d/dotdeb.org.list \
-    && echo "deb http://packages.dotdeb.org wheezy-php55 all" >> /etc/apt/sources.list.d/dotdeb.org.list \
+    && echo "deb http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.org.list \
     && echo "deb-src http://packages.dotdeb.org wheezy all" >> /etc/apt/sources.list.d/dotdeb.org.list \
-    && echo "deb-src http://packages.dotdeb.org wheezy-php55 all" >> /etc/apt/sources.list.d/dotdeb.org.list \
+    && echo "deb-src http://packages.dotdeb.org wheezy-php56 all" >> /etc/apt/sources.list.d/dotdeb.org.list \
     && wget -O- http://www.dotdeb.org/dotdeb.gpg | apt-key add - \
 
     && echo "deb http://packages.blackfire.io/debian any main" > /etc/apt/sources.list.d/blackfire.list \
@@ -42,7 +45,7 @@ RUN set -x \
            $BUILD_DEPS \
            blackfire-php \
            libgpgme11 \
-           php5-apcu=$PHP_VERSION* \
+           php5-apcu=$PHP_APCU_VERSION* \
            php5-cli=$PHP_VERSION* \
            php5-curl=$PHP_VERSION* \
            php5-fpm=$PHP_VERSION* \
@@ -51,9 +54,9 @@ RUN set -x \
            php5-mysql=$PHP_VERSION* \
            php5-pgsql=$PHP_VERSION* \
            php5-readline=$PHP_VERSION* \
-           php5-redis=$PHP_VERSION* \
+           php5-redis=$PHP_REDIS_VERSION* \
            php5-sqlite=$PHP_VERSION* \
-           php5-xdebug=$PHP_VERSION* \
+           php5-xdebug=$PHP_XDEBUG_VERSION* \
 
     # Compile php5-gnupg
 
