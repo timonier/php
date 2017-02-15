@@ -69,3 +69,4 @@ __Note__: Use the script `bin/build` to test your modifications locally.
 
 * [image "timonier/php"](https://hub.docker.com/r/timonier/php/)
 * [php](http://www.php.net/)
+* [timonier/dumb-entrypoint](https://github.com/timonier/dumb-entrypoint)
