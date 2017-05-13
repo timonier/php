@@ -4,7 +4,7 @@ The PHP Interpreter
 
 ## Installation
 
-Copy the file `bin/php` into your executable folder (like `/usr/local/bin` or `$HOME/bin`):
+Copy `bin/php` into your executable folder (like `/usr/local/bin` or `$HOME/bin`):
 
 ```sh
 sudo curl -sLo /usr/local/bin/php "https://github.com/timonier/php/raw/master/bin/php"
@@ -14,7 +14,7 @@ sudo chmod +x /usr/local/bin/php
 Linux users can use the [installer](https://github.com/timonier/php/blob/master/bin/installer):
 
 ```sh
-curl -sL "https://github.com/timonier/php/raw/master/bin/installer" | sudo sh -s install
+curl --location "https://github.com/timonier/php/raw/master/bin/installer" | sudo sh -s install
 ```
 
 ## Usage
@@ -22,15 +22,17 @@ curl -sL "https://github.com/timonier/php/raw/master/bin/installer" | sudo sh -s
 Run the command `php`:
 
 ```sh
+# See all php options
+
+php --help
+
+# Run php as interactive shell
+
 php -a
 #Interactive shell
 #
 #php >
-```
 
-If you wish to configure PHP, you can use option `-n`:
-
-```sh
 # Define date.timezone
 
 php -d date.timezone=Europe/Paris -i | grep "date.timezone"
@@ -39,20 +41,9 @@ php -d date.timezone=Europe/Paris -i | grep "date.timezone"
 
 php -m | grep "xdebug"
 # (empty)
+
 php -d zend_extension=xdebug.so -m | grep "xdebug"
 # xdebug
-```
-
-__Note__: By default, the version `7.0.14` will be used. To change the version, define the `TAG` before the command. For example:
-
-```sh
-php -v
-# PHP 7.0.14-1~dotdeb+8.1 (cli) ( NTS )
-# ...
-
-TAG="5.5.38" php -v
-# PHP 5.5.38-1~dotdeb+7.1 (cli) (built: Jul 21 2016 18:33:48)
-# ...
 ```
 
 ## Contributing
