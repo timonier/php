@@ -1,11 +1,19 @@
 #!/bin/sh
 
+# Check environment
+
+export PATH=$(echo "${PATH}:/usr/sbin" | awk -v RS=":" -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
+
+# Run command
+
+touch "${HOME}/.php"
+
 docker run \
     $(env | cut -d= -f1 | awk '{print "--env", $1}') \
-    --interactive=$([ -t 0 ] && echo "true" || echo "false") \
+    --interactive \
     --net host \
     --rm \
-    --tty=$([ -t 0 ] && echo "true" || echo "false") \
+    --tty="$([ -t 0 ] && echo "true" || echo "false")" \
     --volume /etc/group:/etc/group:ro \
     --volume /etc/localtime:/etc/localtime:ro \
     --volume /etc/passwd:/etc/passwd:ro \
@@ -13,6 +21,7 @@ docker run \
     --volume /run:/run \
     --volume /tmp:/tmp \
     --volume "${HOME}:${HOME}" \
+    --volume "${HOME}/.php:/usr/local/etc/php/conf.d/default.ini:ro" \
     --volume "${PWD}:${PWD}" \
     --workdir "${PWD}" \
-    ${IMAGE:-timonier/php}:${TAG:-latest} php "$@"
+    "${IMAGE:-timonier/php}:${TAG:-latest}" php "$@"

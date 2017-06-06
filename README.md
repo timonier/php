@@ -14,7 +14,7 @@ sudo chmod +x /usr/local/bin/php
 Linux users can use the [installer](https://github.com/timonier/php/blob/master/bin/installer):
 
 ```sh
-curl --location "https://github.com/timonier/php/raw/master/bin/installer" | sudo sh -s install
+curl --location "https://github.com/timonier/php/raw/master/bin/installer" | sudo sh -s -- install
 ```
 
 ## Usage
@@ -45,6 +45,8 @@ php -m | grep "xdebug"
 php -d zend_extension=xdebug.so -m | grep "xdebug"
 # xdebug
 ```
+
+__Note__: You can also define the PHP configuration in `${HOME}/.php`.
 
 ## Contributing
 

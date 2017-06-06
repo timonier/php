@@ -16,6 +16,7 @@ RUN set -eux \
     && apt-get install --no-install-recommends --yes \
            git \
            locales \
+           openssh-client \
 
     # Install php-acpu
 
@@ -121,7 +122,7 @@ RUN set -eux \
 
     # Install timonier/dumb-entrypoint
 
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/bin/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s install \
+    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/bin/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
 
     # Clean
 
