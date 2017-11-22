@@ -4,6 +4,8 @@ The PHP Interpreter
 
 ## Installation
 
+### cli
+
 Copy `bin/php` into your executable folder (like `/usr/local/bin` or `$HOME/bin`):
 
 ```sh
@@ -18,6 +20,8 @@ curl --location "https://github.com/timonier/php/raw/master/bin/installer" | sud
 ```
 
 ## Usage
+
+### cli
 
 Run the command `php`:
 
@@ -47,6 +51,56 @@ php -d zend_extension=xdebug.so -m | grep "xdebug"
 ```
 
 __Note__: You can also define the PHP configuration in `${HOME}/.php`.
+
+### fpm
+
+Run the application via `docker run`:
+
+```sh
+# Create index.php
+
+cat > index.php << "EOF"
+<?php
+phpinfo();
+EOF
+
+# Create nginx configuration
+
+cat > default.conf << "EOF"
+server {
+    listen *:80 default_server;
+    server_name _;
+
+    index index.php;
+    root /opt/test;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+EOF
+
+# Start services
+
+docker run \
+    --detach \
+    --net host \
+    --volume $PWD:/opt/test:ro \
+    timonier/php:fpm
+
+docker run \
+    --detach \
+    --net host \
+    --volume $PWD:/etc/nginx/conf.d:ro \
+    --volume $PWD:/opt/test:ro \
+    nginx:alpine
+
+# Go to "http://localhost/"
+```
 
 ## Contributing
 

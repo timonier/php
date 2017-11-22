@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Check environment
 
@@ -24,4 +25,4 @@ docker run \
     --volume "${HOME}/.php:/usr/local/etc/php/conf.d/default.ini:ro" \
     --volume "${PWD}:${PWD}" \
     --workdir "${PWD}" \
-    "${IMAGE:-timonier/php}:${TAG:-latest}" php "$@"
+    "${IMAGE:-timonier/php}:${TAG:-cli}" php "$@"

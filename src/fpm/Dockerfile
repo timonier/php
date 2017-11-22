@@ -3,7 +3,11 @@ FROM php:fpm
 LABEL \
     maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
 
-RUN set -eux \
+ENV \
+    S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
+    S6_KEEP_ENV=1
+
+RUN set -ex \
 
     # Prepare system
 
@@ -120,10 +124,6 @@ RUN set -eux \
 
     && docker-php-ext-install zip \
 
-    # Install timonier/dumb-entrypoint
-
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/bin/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
-
     # Clean
 
     && apt-get remove -y --purge \
@@ -137,6 +137,16 @@ RUN set -eux \
 
     && rm -rf \
            /tmp/* \
+           /usr/local/etc/php-fpm.d/* \
            /var/lib/apt/lists/*
 
-ENTRYPOINT [ "dumb-init" , "--" , "dumb-entrypoint" ]
+RUN set -ex \
+
+    # Install timonier/dumb-entrypoint
+
+    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/s6-overlay/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
+    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/syslog-stdout/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install
+
+COPY ./rootfs /
+
+ENTRYPOINT [ "/init" ]
