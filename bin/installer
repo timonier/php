@@ -25,7 +25,7 @@ fi
 
 case "$1" in
     install )
-        curl --location --output /usr/local/bin/php "https://github.com/timonier/php/raw/master/bin/php"
+        curl --location --output /usr/local/bin/php "https://github.com/timonier/php/raw/master/bin/cmd"
         chmod +x /usr/local/bin/php
     ;;
 

@@ -25,4 +25,4 @@ docker run \
     --volume "${HOME}/.php:/usr/local/etc/php/conf.d/default.ini:ro" \
     --volume "${PWD}:${PWD}" \
     --workdir "${PWD}" \
-    "${IMAGE:-timonier/php}:${TAG:-cli}" php "$@"
+    "${IMAGE:-timonier/php}:${TAG:-cli}" "$(basename "$0")" "$@"

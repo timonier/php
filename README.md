@@ -6,13 +6,6 @@ The PHP Interpreter
 
 ### cli
 
-Copy `bin/php` into your executable folder (like `/usr/local/bin` or `$HOME/bin`):
-
-```sh
-sudo curl -sLo /usr/local/bin/php "https://github.com/timonier/php/raw/master/bin/php"
-sudo chmod +x /usr/local/bin/php
-```
-
 Linux users can use the [installer](https://github.com/timonier/php/blob/master/bin/installer):
 
 ```sh
