@@ -1,14 +1,10 @@
 #!/bin/sh
 set -e
 
-GROUP=${GROUP:-www-data}
-if echo "${GROUP}" | grep --extended-regexp --invert-match --quiet ^-?[0-9]+$ ; then
-    GROUP=$(id --group "${GROUP}")
+if [ -n "${GROUP}" ] ; then
+    groupmod --gid "${GROUP}" --non-unique www-data
 fi
-groupmod --gid "${GROUP}" --non-unique www-data
 
-USER=${USER:-www-data}
-if echo "${USER}" | grep --extended-regexp --invert-match --quiet ^-?[0-9]+$ ; then
-    USER=$(id --user "${USER}")
+if [ -n "${USER}" ] ; then
+    usermod --non-unique --uid "${USER}" www-data
 fi
-usermod --non-unique --uid "${USER}" www-data

@@ -1,28 +1,30 @@
-FROM php:7.1-cli
+FROM php:cli-alpine
 
 LABEL \
     maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
 
+ENV \
+    S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
+    S6_KEEP_ENV=1
+
 RUN set -ex \
-\
-    # Prepare system
-\
-    && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \
 \
     # Install packages
 \
-    && apt-get install --no-install-recommends --yes \
-           git \
-           locales \
-           openssh-client \
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS \
+           ${PHPIZE_DEPS} \
 \
-    # Install php-acpu
+    # Install php-amqp
 \
-    && export BUILD_DEPS_PHP_APCU="libpcre3-dev" \
-    && apt-get install --no-install-recommends --yes \
-           ${BUILD_DEPS_PHP_APCU} \
-           libpcre3 \
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_AMQP \
+           rabbitmq-c-dev \
+    && apk add --no-cache --no-progress \
+           rabbitmq-c \
+    && pecl install amqp \
+    && docker-php-ext-enable amqp \
+\
+    # Install php-apcu
+\
     && pecl install apcu \
     && docker-php-ext-enable apcu \
 \
@@ -39,21 +41,31 @@ RUN set -ex \
 \
     # Install php-gd
 \
-    && export BUILD_DEPS_PHP_GD="libfreetype6-dev libjpeg62-turbo-dev libpng12-dev" \
-    && apt-get install --no-install-recommends --yes \
-            ${BUILD_DEPS_PHP_GD} \
-            libfreetype6 \
-            libjpeg62-turbo \
-            libpng12-0 \
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_GD \
+           freetype-dev \
+           libjpeg-turbo-dev \
+           libpng-dev \
+    && apk add --no-cache --no-progress \
+           freetype \
+           libjpeg-turbo \
+           libpng \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd \
 \
+    # Install php-gmp
+\
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_GMP \
+           gmp-dev \
+    && apk add --no-cache --no-progress \
+           gmp \
+    && docker-php-ext-install gmp \
+\
     # Install php-gnupg
 \
-    && export BUILD_DEPS_PHP_GNUPG="libgpgme11-dev" \
-    && apt-get install --no-install-recommends --yes \
-            ${BUILD_DEPS_PHP_GNUPG} \
-            libgpgme11 \
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_GNUPG \
+           gpgme-dev \
+    && apk add --no-cache --no-progress \
+           gpgme \
     && pecl install gnupg \
     && docker-php-ext-enable gnupg \
 \
@@ -64,11 +76,15 @@ RUN set -ex \
 \
     # Install php-intl
 \
-    && export BUILD_DEPS_PHP_INTL="libicu-dev" \
-    && apt-get install --no-install-recommends --yes \
-            ${BUILD_DEPS_PHP_INTL} \
-            libicu52 \
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_INTL \
+           icu-dev \
+    && apk add --no-cache --no-progress \
+           icu \
     && docker-php-ext-install intl \
+\
+    # Install php-mysql
+\
+    && docker-php-ext-install pdo_mysql \
 \
     # Install php-opcache
 \
@@ -76,15 +92,11 @@ RUN set -ex \
 \
     # Install php-pgsql
 \
-    && export BUILD_DEPS_PHP_PGSQL="libpq-dev" \
-    && apt-get install --no-install-recommends --yes \
-            ${BUILD_DEPS_PHP_PGSQL} \
-            libpq5 \
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_PGSQL \
+           postgresql-dev \
+    && apk add --no-cache --no-progress \
+           postgresql-libs \
     && docker-php-ext-install pdo_pgsql pgsql \
-\
-    # Install php-mysql
-\
-    && docker-php-ext-install pdo_mysql \
 \
     # Install php-redis
 \
@@ -93,40 +105,38 @@ RUN set -ex \
 \
     # Install php-xdebug
 \
-    && pecl install xdebug \
+    && pecl install xdebug-beta \
 \
     # Install php-xml
 \
-    && export BUILD_DEPS_PHP_XML="libxml2-dev" \
-    && apt-get install --no-install-recommends --yes \
-            ${BUILD_DEPS_PHP_XML} \
-\
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_XML \
+           libxml2-dev \
+    && apk add --no-cache --no-progress \
+           libxml2 \
     && docker-php-ext-install xml \
 \
     # Install php-zip
 \
     && docker-php-ext-install zip \
 \
-    # Clean
-\
-    && apt-get remove -y --purge \
-           ${BUILD_DEPS_PHP_APCU} \
-           ${BUILD_DEPS_PHP_GD} \
-           ${BUILD_DEPS_PHP_GNUPG} \
-           ${BUILD_DEPS_PHP_INTL} \
-           ${BUILD_DEPS_PHP_PGSQL} \
-           ${BUILD_DEPS_PHP_XML} \
-    && apt-get autoremove --purge --yes \
-    && rm -rf \
-           /tmp/* \
-           /var/lib/apt/lists/*
-
-RUN set -ex \
-\
     # Install timonier/dumb-entrypoint
 \
     && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dumb-entrypoint/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
     && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dumb-init/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/gosu/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install
+    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/gosu/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
+\
+    # Clean
+\
+    && apk del --no-progress \
+           BUILD_DEPS \
+           BUILD_DEPS_PHP_AMQP \
+           BUILD_DEPS_PHP_GD \
+           BUILD_DEPS_PHP_GMP \
+           BUILD_DEPS_PHP_GNUPG \
+           BUILD_DEPS_PHP_INTL \
+           BUILD_DEPS_PHP_PGSQL \
+           BUILD_DEPS_PHP_XML \
+    && rm -f -r \
+           /tmp/*
 
 ENTRYPOINT [ "dumb-init" , "--" , "dumb-entrypoint" ]
