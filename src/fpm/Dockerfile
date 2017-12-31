@@ -4,6 +4,7 @@ LABEL \
     maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
 
 ENV \
+    COMPOSER_ALLOW_SUPERUSER=1 \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_KEEP_ENV=1
 
@@ -14,6 +15,9 @@ RUN set -ex \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS \
            ${PHPIZE_DEPS} \
     && apk add --no-cache --no-progress \
+           ca-certificates \
+           git \
+           openssh-client \
            shadow \
 \
     # Install php-amqp
@@ -120,6 +124,11 @@ RUN set -ex \
     # Install php-zip
 \
     && docker-php-ext-install zip \
+\
+    # Install composer/composer
+\
+    && curl --location --output /usr/bin/composer "https://getcomposer.org/composer.phar" \
+    && chmod +x /usr/bin/composer \
 \
     # Install timonier/dumb-entrypoint
 \
