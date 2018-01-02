@@ -1,12 +1,14 @@
+FROM composer:latest as composer
+
+# ---
+
 FROM php:cli-alpine
 
 LABEL \
     maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
 
 ENV \
-    COMPOSER_ALLOW_SUPERUSER=1 \
-    S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
-    S6_KEEP_ENV=1
+    COMPOSER_ALLOW_SUPERUSER=1
 
 RUN set -ex \
 \
@@ -124,15 +126,9 @@ RUN set -ex \
 \
     && docker-php-ext-install zip \
 \
-    # Install composer/composer
-\
-    && curl --location --output /usr/bin/composer "https://getcomposer.org/composer.phar" \
-    && chmod +x /usr/bin/composer \
-\
     # Install timonier/dumb-entrypoint
 \
     && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dumb-entrypoint/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dumb-init/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
     && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/gosu/installer" | INSTALL_DIRECTORY="/usr/sbin" sh -s -- install \
 \
     # Clean
@@ -149,4 +145,6 @@ RUN set -ex \
     && rm -f -r \
            /tmp/*
 
-ENTRYPOINT [ "dumb-init" , "--" , "dumb-entrypoint" ]
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+ENTRYPOINT [ "dumb-entrypoint" ]

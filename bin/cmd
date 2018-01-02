@@ -11,6 +11,7 @@ touch "${HOME}/.php"
 
 docker run \
     $(env | cut -d= -f1 | awk '{print "--env", $1}') \
+    --init \
     --interactive \
     --net host \
     --rm \
