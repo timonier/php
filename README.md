@@ -90,7 +90,7 @@ docker run \
     --net host \
     --volume $PWD:/etc/nginx/conf.d:ro \
     --volume $PWD:/opt/test:ro \
-    nginx:alpine
+    nginx:stable-alpine
 
 # Go to "http://localhost/"
 ```
