@@ -116,7 +116,7 @@ RUN set -ex \
 \
     # Install php-xdebug
 \
-    && pecl install xdebug-beta \
+    && pecl install xdebug \
 \
     # Install php-xml
 \
