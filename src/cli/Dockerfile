@@ -21,7 +21,12 @@ RUN set -ex \
            git \
            openssh-client \
 \
-    # Install php-amqp
+    # Install melody
+\
+    && curl --location --output /usr/bin/melody "http://get.sensiolabs.org/melody.phar" \
+    && chmod +x /usr/bin/melody \
+\
+    # Install php-ext-amqp
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_AMQP \
            rabbitmq-c-dev \
@@ -30,23 +35,23 @@ RUN set -ex \
     && pecl install amqp \
     && docker-php-ext-enable amqp \
 \
-    # Install php-apcu
+    # Install php-ext-apcu
 \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
 \
-    # Install php-bcmath
+    # Install php-ext-bcmath
 \
     && docker-php-ext-install bcmath \
 \
-    # Install php-blackfire
+    # Install php-ext-blackfire
 \
     && export PHP_VERSION="$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;")" \
     && curl --location --user-agent Docker "https://blackfire.io/api/v1/releases/probe/php/linux/amd64/${PHP_VERSION}" | tar --directory /tmp --extract --gzip \
     && mv /tmp/blackfire-*.so "$(php -r "echo ini_get('extension_dir');")/blackfire.so" \
     && docker-php-ext-enable blackfire \
 \
-    # Install php-gd
+    # Install php-ext-gd
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_GD \
            freetype-dev \
@@ -59,7 +64,7 @@ RUN set -ex \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd \
 \
-    # Install php-gmp
+    # Install php-ext-gmp
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_GMP \
            gmp-dev \
@@ -67,7 +72,7 @@ RUN set -ex \
            gmp \
     && docker-php-ext-install gmp \
 \
-    # Install php-gnupg
+    # Install php-ext-gnupg
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_GNUPG \
            gpgme-dev \
@@ -76,12 +81,12 @@ RUN set -ex \
     && pecl install gnupg \
     && docker-php-ext-enable gnupg \
 \
-    # Install php-igbinary
+    # Install php-ext-igbinary
 \
     && pecl install igbinary \
     && docker-php-ext-enable igbinary \
 \
-    # Install php-intl
+    # Install php-ext-intl
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_INTL \
            icu-dev \
@@ -89,15 +94,15 @@ RUN set -ex \
            icu \
     && docker-php-ext-install intl \
 \
-    # Install php-mysql
+    # Install php-ext-mysql
 \
     && docker-php-ext-install pdo_mysql \
 \
-    # Install php-opcache
+    # Install php-ext-opcache
 \
     && docker-php-ext-install opcache \
 \
-    # Install php-pgsql
+    # Install php-ext-pgsql
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_PGSQL \
            postgresql-dev \
@@ -105,16 +110,16 @@ RUN set -ex \
            postgresql-libs \
     && docker-php-ext-install pdo_pgsql pgsql \
 \
-    # Install php-redis
+    # Install php-ext-redis
 \
     && pecl install redis \
     && docker-php-ext-enable redis \
 \
-    # Install php-xdebug
+    # Install php-ext-xdebug
 \
     && pecl install xdebug \
 \
-    # Install php-xml
+    # Install php-ext-xml
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_XML \
            libxml2-dev \
@@ -122,9 +127,14 @@ RUN set -ex \
            libxml2 \
     && docker-php-ext-install xml \
 \
-    # Install php-zip
+    # Install php-ext-zip
 \
     && docker-php-ext-install zip \
+\
+    # Install php-cs-fixer
+\
+    && curl --location --output /usr/bin/php-cs-fixer "http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar" \
+    && chmod +x /usr/bin/php-cs-fixer \
 \
     # Install timonier/dumb-entrypoint
 \

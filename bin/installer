@@ -25,12 +25,24 @@ fi
 
 case "$1" in
     install )
+        curl --location --output /usr/local/bin/composer "https://github.com/timonier/php/raw/master/bin/cmd"
+        chmod +x /usr/local/bin/composer
+
+        curl --location --output /usr/local/bin/melody "https://github.com/timonier/php/raw/master/bin/cmd"
+        chmod +x /usr/local/bin/melody
+
         curl --location --output /usr/local/bin/php "https://github.com/timonier/php/raw/master/bin/cmd"
         chmod +x /usr/local/bin/php
+
+        curl --location --output /usr/local/bin/php-cs-fixer "https://github.com/timonier/php/raw/master/bin/cmd"
+        chmod +x /usr/local/bin/php-cs-fixer
     ;;
 
     uninstall )
+        rm --force /usr/local/bin/composer
+        rm --force /usr/local/bin/melody
         rm --force /usr/local/bin/php
+        rm --force /usr/local/bin/php-cs-fixer
     ;;
 
     * )

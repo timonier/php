@@ -107,6 +107,9 @@ __Note__: Use the script `bin/build` to test your modifications locally.
 
 ## Links
 
+* [composer](https://getcomposer.org)
 * [image "timonier/php"](https://hub.docker.com/r/timonier/php/)
+* [melody](http://melody.sensiolabs.org)
 * [php](http://www.php.net/)
+* [php-cs-fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 * [timonier/dumb-entrypoint](https://github.com/timonier/dumb-entrypoint)
