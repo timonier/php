@@ -86,6 +86,15 @@ RUN set -ex \
     && pecl install igbinary \
     && docker-php-ext-enable igbinary \
 \
+    # Install php-ext-imagick
+\
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_IMAGICK \
+           imagemagick-dev \
+    && apk add --no-cache --no-progress \
+           imagemagick \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+\
     # Install php-ext-intl
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_INTL \
