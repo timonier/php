@@ -1,4 +1,4 @@
 #!/bin/sh
-set -e
+set -e -u
 
 exec s6-setuidgid root syslogd -O /dev/stderr -S -n

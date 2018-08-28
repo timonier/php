@@ -1,6 +1,7 @@
 #!/bin/sh
-set -ex
-cd "$(dirname "$0")/../src"
+set -e -u -x
+cd "$(dirname "$0")"/../src
 
-sh -c "cd cli && docker build --tag '${IMAGE:-timonier/php}:${TAG:-cli}' ."
-sh -c "cd fpm && docker build --tag '${IMAGE:-timonier/php}:${TAG:-fpm}' ."
+docker build --file cli/Dockerfile --tag "${IMAGE:-timonier/php}":"${TAG:-cli}" cli
+
+docker build --file fpm/Dockerfile --tag "${IMAGE:-timonier/php}":"${TAG:-fpm}" fpm

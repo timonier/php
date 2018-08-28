@@ -9,8 +9,20 @@ The PHP Interpreter
 Linux users can use the [installer](https://github.com/timonier/php/blob/master/bin/installer):
 
 ```sh
+# Define installation folder
+
+export INSTALL_DIRECTORY=/usr/bin
+
+# Use local installation
+
+sudo bin/installer install
+
+# Use remote installation
+
 curl --location "https://github.com/timonier/php/raw/master/bin/installer" | sudo sh -s -- install
 ```
+
+__Note__: If you do not define `INSTALL_DIRECTORY`, `installer` will use in `/usr/local/bin`.
 
 ## Usage
 
@@ -79,18 +91,9 @@ EOF
 
 # Start services
 
-docker run \
-    --detach \
-    --net host \
-    --volume $PWD:/opt/test:ro \
-    timonier/php:fpm
+docker run --detach --net host --volume $PWD:/opt/test:ro timonier/php:fpm
 
-docker run \
-    --detach \
-    --net host \
-    --volume $PWD:/etc/nginx/conf.d:ro \
-    --volume $PWD:/opt/test:ro \
-    nginx:stable-alpine
+docker run --detach --net host --volume $PWD:/etc/nginx/conf.d:ro --volume $PWD:/opt/test:ro nginx:stable-alpine
 
 # Go to "http://localhost/"
 ```

@@ -1,6 +1,6 @@
 #!/bin/sh
-set -e
+set -e -u
 
-s6-svwait /var/run/s6/services/syslogd
+s6-svwait /run/s6/services/syslogd
 
 exec s6-setuidgid root php-fpm
