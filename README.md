@@ -6,8 +6,6 @@ The PHP Interpreter
 
 ### cli
 
-Linux users can use the [installer](https://github.com/timonier/php/blob/master/bin/installer):
-
 ```sh
 # Define installation folder
 
@@ -114,6 +112,7 @@ If you like / use this project, please let me known by adding a [★](https://he
 
 * [composer](https://getcomposer.org)
 * [image "timonier/php"](https://hub.docker.com/r/timonier/php/)
+* [just-containers/s6-overlay](https://github.com/just-containers/s6-overlay)
 * [melody](http://melody.sensiolabs.org)
 * [php](http://www.php.net/)
 * [php-cs-fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)

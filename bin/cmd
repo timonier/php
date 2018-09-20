@@ -1,6 +1,19 @@
 #!/bin/bash
 set -e -u
 
-touch "${HOME}"/.php
+fail() {
+    echo 1>&2 "$1"
+    exit 255
+}
 
-docker run $(compgen -A variable | grep -v "PATH" | awk "{print \"--env\", \$1}") --init --interactive --net host --rm --tty="$([ -t 0 ] && echo "true" || echo "false")" --volume /etc/group:/etc/group:ro --volume /etc/localtime:/etc/localtime:ro --volume /etc/passwd:/etc/passwd:ro --volume /etc/timezone:/etc/timezone:ro --volume /run:/run --volume /tmp:/tmp --volume "${HOME}":"${HOME}" --volume "${HOME}"/.php:/usr/local/etc/php/conf.d/default.ini:ro --volume "${PWD}":"${PWD}" --workdir "${PWD}" "${IMAGE:-timonier/php}":"${TAG:-cli}" "$(basename "$0")" "$@"
+if [ "$(uname)" == "Darwin" ]; then
+    touch "${HOME}"/.php
+    exec docker run $(compgen -A variable | grep -E -v "^(HOME|JAVA_HOME|LOGNAME|OLDPWD|PATH|SHELL|TMPDIR|USER)$" | awk "{print \"--env\", \$1}") --init --interactive --net host --rm --tty="$([ -t 0 ] && echo "true" || echo "false")" --volume "${HOME}":/root --volume "${HOME}":"${HOME}" --volume "${HOME}"/.php:/usr/local/etc/php/php.ini:ro --workdir "${PWD}" "${IMAGE:-timonier/php}":"${TAG:-cli}" "$(basename "$0")" "$@"
+fi
+
+if [ "$(uname)" == "Linux" ]; then
+    touch "${HOME}"/.php
+    exec docker run $(compgen -A variable | grep -E -v "^(PATH)$" | awk "{print \"--env\", \$1}") --init --interactive --net host --rm --tty="$([ -t 0 ] && echo "true" || echo "false")" --volume /etc/group:/etc/group:ro --volume /etc/localtime:/etc/localtime:ro --volume /etc/passwd:/etc/passwd:ro --volume /etc/timezone:/etc/timezone:ro --volume /run:/run --volume /tmp:/tmp --volume "${HOME}":"${HOME}" --volume "${HOME}"/.php:/usr/local/etc/php/conf.d/default.ini:ro --volume "${PWD}":"${PWD}" --workdir "${PWD}" "${IMAGE:-timonier/php}":"${TAG:-cli}" "$(basename "$0")" "$@"
+fi
+
+fail "Current OS is not supported."
