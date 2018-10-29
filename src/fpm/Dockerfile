@@ -135,6 +135,6 @@ RUN set -e -u -x \
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
-COPY ./rootfs /
+COPY rootfs/. /
 
 ENTRYPOINT [ "/init" ]
