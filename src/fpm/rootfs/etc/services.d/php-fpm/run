@@ -3,4 +3,4 @@ set -e -u
 
 s6-svwait /run/s6/services/syslogd
 
-exec s6-setuidgid root php-fpm
+exec s6-setuidgid root php-fpm --allow-to-run-as-root
