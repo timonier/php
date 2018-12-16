@@ -2,7 +2,7 @@ FROM composer:latest as composer
 
 # ---
 
-FROM php:fpm-alpine
+FROM php:7.2-fpm-alpine
 
 LABEL \
     maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
@@ -12,6 +12,8 @@ ENV \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_KEEP_ENV=1 \
     S6_READ_ONLY_ROOT=1
+
+WORKDIR "/"
 
 RUN set -e -u -x \
 \
@@ -131,7 +133,7 @@ RUN set -e -u -x \
     # Clean
 \
     && apk del --no-progress BUILD_DEPS BUILD_DEPS_PHP_AMQP BUILD_DEPS_PHP_GD BUILD_DEPS_PHP_GMP BUILD_DEPS_PHP_GNUPG BUILD_DEPS_PHP_INTL BUILD_DEPS_PHP_PGSQL BUILD_DEPS_PHP_XML \
-    && rm -f -r /tmp/* /usr/local/etc/php-fpm.d/*
+    && rm -f -r /tmp/* /usr/local/etc/php-fpm.d/* /var/www
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 

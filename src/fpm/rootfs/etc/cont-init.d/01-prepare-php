@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+if [ -n "${PHP_GID}" ]; then
+    groupmod --gid "${PHP_GID}" --non-unique www-data
+fi
+
+if [ -n "${PHP_UID}" ]; then
+    usermod --non-unique --uid "${PHP_UID}" www-data
+fi
+
+mkdir -p /run/php

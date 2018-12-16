@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e -u
+
+s6-svwait /run/s6/services/php-fpm
+s6-svwait /run/s6/services/syslogd
+
+exec s6-setuidgid root nginx

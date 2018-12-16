@@ -2,30 +2,50 @@ FROM composer:latest as composer
 
 # ---
 
-FROM php:7.2-cli-alpine
+FROM php:7.2-fpm-alpine
 
 LABEL \
     maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
 
 ENV \
-    COMPOSER_ALLOW_SUPERUSER=1
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
+    S6_KEEP_ENV=1 \
+    S6_READ_ONLY_ROOT=1
+
+WORKDIR "/"
 
 RUN set -e -u -x \
 \
     # Install packages
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS ${PHPIZE_DEPS} \
-    && apk add --no-cache --no-progress ca-certificates git openssh-client \
+    && apk add --no-cache --no-progress ca-certificates git openssh-client shadow \
+\
+    # Install dockerize
+\
+    && export $(curl --location "https://github.com/timonier/version-lister/raw/generated/jwilder/dockerize/latest" | xargs) \
+    && curl --location "${DOCKERIZE_RELEASE}" | tar --directory /tmp --extract --gzip \
+    && mv /tmp/dockerize /usr/bin/dockerize \
 \
     # Install dumb-entrypoint
 \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dumb-entrypoint/installer" | sh -s -- install \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/gosu/installer" | sh -s -- install \
+    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/s6-overlay/installer" | sh -s -- install \
 \
     # Install melody
 \
     && curl --location --output /usr/local/bin/melody "http://get.sensiolabs.org/melody.phar" \
     && chmod +x /usr/local/bin/melody \
+\
+    # Install nginx
+\
+    && apk add --no-cache --no-progress nginx \
+    && mkdir -p /var/cache/nginx \
+    && chown nginx:nginx /var/cache/nginx \
+    && usermod --home /var/cache/nginx nginx \
+    && ln -sf /dev/stderr /var/log/nginx/error.log \
+    && ln -sf /dev/stdout /var/log/nginx/access.log \
+    && curl --location "https://github.com/timonier/nginx/raw/generated/rootfs.tar.gz" | tar --directory / --extract --gzip \
 \
     # Install php-ext-amqp
 \
@@ -129,8 +149,10 @@ RUN set -e -u -x \
     # Clean
 \
     && apk del --no-progress BUILD_DEPS BUILD_DEPS_PHP_AMQP BUILD_DEPS_PHP_GD BUILD_DEPS_PHP_GMP BUILD_DEPS_PHP_GNUPG BUILD_DEPS_PHP_INTL BUILD_DEPS_PHP_PGSQL BUILD_DEPS_PHP_XML \
-    && rm -f -r /tmp/*
+    && rm -f -r /tmp/* /usr/local/etc/php-fpm.d/* /var/www
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
-ENTRYPOINT [ "dumb-entrypoint" ]
+COPY rootfs/. /
+
+ENTRYPOINT [ "/init" ]

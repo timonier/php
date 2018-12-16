@@ -57,8 +57,6 @@ __Note__: You can also define the PHP configuration in `${HOME}/.php`.
 
 ### fpm
 
-Run the application via `docker run`:
-
 ```sh
 # Create index.php
 
@@ -75,7 +73,7 @@ server {
     server_name _;
 
     index index.php;
-    root /opt/test;
+    root /home/www-data;
 
     location ~ \.php$ {
         try_files $uri =404;
@@ -89,11 +87,64 @@ EOF
 
 # Start services
 
-docker run --detach --net host --volume $PWD:/opt/test:ro timonier/php:fpm
+docker run --detach --net host --volume $PWD:/home/www-data:ro timonier/php:fpm
 
-docker run --detach --net host --volume $PWD:/etc/nginx/conf.d:ro --volume $PWD:/opt/test:ro nginx:stable-alpine
+docker run --detach --net host --volume $PWD:/etc/nginx/conf.d:ro --volume $PWD:/home/www-data:ro timonier/nginx
 
 # Go to "http://localhost/"
+```
+
+It is possible to change `UID` and / or `GID` of user `www-data` (user used to run `php-fpm`) with environment variables `PHP_UID` and `PHP_GID`:
+
+```sh
+docker run --env PHP_GID=1005 --env PHP_UID=1005 --interactive --rm --tty timonier/php:fpm
+```
+
+It is possible to run a container in `read-only` mode if you mount the following folders:
+* `/etc` and `/home/www-data` if you want to change `UID` or `GID` of user `php-fpm`.
+* `/run` and `/tmp`.
+
+__Note__: `/run` and `/tmp` can be mount as `tmpfs`. In that case, `/run` must have flag `exec`.
+
+```sh
+# If you do not want to change "UID" or "GID" of user "www-data"
+
+docker run --interactive --read-only --rm --tmpfs /run:exec --tmpfs /tmp --tty timonier/php:fpm
+
+# If you want to change "UID" or "GID" of user "nginx"
+
+docker run --interactive --read-only --rm --tmpfs /run:exec --tmpfs /tmp --tty --volume /etc --volume /home/www-data timonier/php:nginx
+```
+
+### nginx
+
+```sh
+docker run --interactive --publish 80:80 --rm --tty timonier/php:nginx
+```
+
+__Note__: By default `nginx` opens port `80`.
+
+It is possible to change `UID` and / or `GID` of users `nginx` (user used to run `nginx`) and `www-data` (user used to run `php-fpm`) with environment variables `NGINX_UID`, `NGINX_GID`, `PHP_UID` and `PHP_GID`:
+
+```sh
+docker run --env NGINX_GID=1005 --env NGINX_UID=1005 --env PHP_GID=1006 --env PHP_UID=1006 --interactive --publish 80:80 --rm --tty timonier/php:nginx
+```
+
+It is possible to run a container in `read-only` mode if you mount the following folders:
+* `/etc` if you want to change `UID` or `GID` of user `nginx`.
+* `/etc` and `/home/www-data` if you want to change `UID` or `GID` of user `php-fpm`.
+* `/run`, `/tmp` and `/var/cache/nginx`.
+
+__Note__: `/run`, `/tmp` and `/var/cache/nginx` can be mount as `tmpfs`. In that case, `/run` must have flag `exec`.
+
+```sh
+# If you do not want to change "UID" or "GID" of user "nginx"
+
+docker run --interactive --publish 80:80 --read-only --rm --tmpfs /run:exec --tmpfs /tmp --tmpfs /var/cache/nginx --tty timonier/php:nginx
+
+# If you want to change "UID" or "GID" of user "nginx"
+
+docker run --interactive --publish 80:80 --read-only --rm --tmpfs /run:exec --tmpfs /tmp --tmpfs /var/cache/nginx --tty --volume /etc --volume /home/www-data timonier/php:nginx
 ```
 
 ## Contributing
