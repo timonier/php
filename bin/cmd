@@ -8,7 +8,7 @@ _fail() {
 
 if [ "$(uname)" == "Darwin" ]; then
     touch "${HOME}"/.php
-    exec docker run $(compgen -A variable | grep -E -v "^(HOME|JAVA_HOME|LOGNAME|OLDPWD|PATH|SHELL|TMPDIR|USER)$" | awk "{print \"--env\", \$1}") --init --interactive --net host --rm --tty="$([ -t 0 ] && echo "true" || echo "false")" --volume "${HOME}":/root --volume "${HOME}":"${HOME}" --volume "${HOME}"/.php:/usr/local/etc/php/php.ini:ro --workdir "${PWD}" "${IMAGE:-timonier/php}":"${TAG:-cli}" "$(basename "$0")" "$@"
+    exec docker run $(compgen -A variable | grep -E -v "^(HOME|JAVA_HOME|LOGNAME|OLDPWD|PATH|SHELL|TMPDIR|USER)$" | awk "{print \"--env\", \$1}") --init --interactive --mount "dst=${HOME},src=timonier-php-home,type=volume,volume-driver=local,volume-opt=device=:${HOME},volume-opt=type=nfs,\"volume-opt=o=addr=host.docker.internal,hard,nfsvers=3,nointr,nolock,rw\"" --mount "dst=/root,src=timonier-php-root,type=volume,volume-driver=local,volume-opt=device=:${HOME},volume-opt=type=nfs,\"volume-opt=o=addr=host.docker.internal,hard,nfsvers=3,nointr,nolock,rw\"" --net host --rm --tty="$([ -t 0 ] && echo "true" || echo "false")" --volume "${HOME}"/.php:/usr/local/etc/php/php.ini:ro --workdir "${PWD}" "${IMAGE:-timonier/php}":"${TAG:-cli}" "$(basename "$0")" "$@"
 fi
 
 if [ "$(uname)" == "Linux" ]; then
