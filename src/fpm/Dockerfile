@@ -13,14 +13,12 @@ ENV \
     S6_KEEP_ENV=1 \
     S6_READ_ONLY_ROOT=1
 
-WORKDIR "/"
-
 RUN set -e -u -x \
 \
     # Install packages
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS ${PHPIZE_DEPS} \
-    && apk add --no-cache --no-progress ca-certificates git openssh-client shadow \
+    && apk add --no-cache --no-progress bash ca-certificates git openssh-client shadow \
 \
     # Install dumb-entrypoint
 \

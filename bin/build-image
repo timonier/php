@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e -u -x
 cd "$(dirname "$0")"/../src
 
@@ -16,4 +16,4 @@ if [ ! -d "$1" ]; then
     _fail "Image \"$1\" does not exist."
 fi
 
-docker build --file "$1"/Dockerfile --tag "${IMAGE:-timonier/php}":"${TAG:-$1}" "$1"
+docker build --pull --file "$1"/Dockerfile --tag "${IMAGE:-timonier/php}":"${TAG:-$1}" "$1"

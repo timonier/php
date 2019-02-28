@@ -15,7 +15,7 @@ RUN set -e -u -x \
     # Install packages
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS ${PHPIZE_DEPS} \
-    && apk add --no-cache --no-progress ca-certificates git openssh-client \
+    && apk add --no-cache --no-progress bash ca-certificates git openssh-client \
 \
     # Install dumb-entrypoint
 \
