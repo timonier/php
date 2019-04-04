@@ -29,6 +29,11 @@ RUN set -e -u -x \
     && curl --location --output /usr/local/bin/melody "http://get.sensiolabs.org/melody.phar" \
     && chmod +x /usr/local/bin/melody \
 \
+    # Install php-ext-apfd
+\
+    && pecl install apfd \
+    && docker-php-ext-enable apfd \
+\
     # Install php-ext-amqp
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_AMQP rabbitmq-c-dev \

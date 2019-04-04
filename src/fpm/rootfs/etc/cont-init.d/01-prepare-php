@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+shopt -s globstar
 
 if [ -n "${PHP_GID}" ]; then
     groupmod --gid "${PHP_GID}" --non-unique www-data
@@ -10,3 +11,8 @@ if [ -n "${PHP_UID}" ]; then
 fi
 
 mkdir -p /run/php
+
+for FILE in /usr/local/etc/php/**/*; do
+    dockerize -delims '⁅⁅:⁆⁆' -template "${FILE}":"${FILE}"
+    dockerize -delims '\u2045\u2045:\u2046\u2046' -template "${FILE}":"${FILE}"
+done

@@ -45,6 +45,11 @@ RUN set -e -u -x \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && curl --location "https://github.com/timonier/nginx/raw/generated/rootfs.tar.gz" | tar --directory / --extract --gzip \
 \
+    # Install php-ext-apfd
+\
+    && pecl install apfd \
+    && docker-php-ext-enable apfd \
+\
     # Install php-ext-amqp
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_AMQP rabbitmq-c-dev \
