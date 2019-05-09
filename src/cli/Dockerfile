@@ -1,7 +1,3 @@
-FROM composer:latest as composer
-
-# ---
-
 FROM php:7.2-cli-alpine
 
 LABEL \
@@ -136,6 +132,6 @@ RUN set -e -u -x \
     && apk del --no-progress BUILD_DEPS BUILD_DEPS_PHP_AMQP BUILD_DEPS_PHP_GD BUILD_DEPS_PHP_GMP BUILD_DEPS_PHP_GNUPG BUILD_DEPS_PHP_INTL BUILD_DEPS_PHP_PGSQL BUILD_DEPS_PHP_XML \
     && rm -f -r /tmp/*
 
-COPY --from=composer /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 ENTRYPOINT [ "dumb-entrypoint" ]

@@ -104,7 +104,7 @@ docker run --env PHP_GID=1005 --env PHP_UID=1005 --interactive --rm --tty timoni
 
 It is possible to run a container in `read-only` mode if you mount the following folders:
 * `/etc` and `/home/www-data` if you want to change `UID` or `GID` of user `php-fpm`.
-* `/run` and `/tmp`.
+* `/run`, `/tmp`, `/usr/local/etc/php` and `/usr/local/etc/php-fpm.d`.
 
 __Note__: `/run` and `/tmp` can be mount as `tmpfs`. In that case, `/run` must have flag `exec`.
 
@@ -135,7 +135,7 @@ docker run --env NGINX_GID=1005 --env NGINX_UID=1005 --env PHP_GID=1006 --env PH
 It is possible to run a container in `read-only` mode if you mount the following folders:
 * `/etc` if you want to change `UID` or `GID` of user `nginx`.
 * `/etc` and `/home/www-data` if you want to change `UID` or `GID` of user `php-fpm`.
-* `/run`, `/tmp` and `/var/cache/nginx`.
+* `/etc/nginx`, `/run`, `/tmp`, `/usr/local/etc/php`, `/usr/local/etc/php-fpm.d` and `/var/cache/nginx`.
 
 __Note__: `/run`, `/tmp` and `/var/cache/nginx` can be mount as `tmpfs`. In that case, `/run` must have flag `exec`.
 

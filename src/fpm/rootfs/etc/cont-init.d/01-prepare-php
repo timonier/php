@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 shopt -s globstar
 
 if [ -n "${PHP_GID}" ]; then
@@ -12,7 +11,12 @@ fi
 
 mkdir -p /run/php
 
-for FILE in /usr/local/etc/php/**/*; do
+if [ -f /usr/local/etc/php/php.ini ]; then
+    dockerize -delims '⁅⁅:⁆⁆' -template /usr/local/etc/php/php.ini:/usr/local/etc/php/php.ini
+fi
+for FILE in /usr/local/etc/php/conf.d/*; do
     dockerize -delims '⁅⁅:⁆⁆' -template "${FILE}":"${FILE}"
-    dockerize -delims '\u2045\u2045:\u2046\u2046' -template "${FILE}":"${FILE}"
+done
+for FILE in /usr/local/etc/php-fpm.d/*; do
+    dockerize -delims '⁅⁅:⁆⁆' -template "${FILE}":"${FILE}"
 done
