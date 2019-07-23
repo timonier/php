@@ -166,6 +166,7 @@ If you like / use this project, please let me known by adding a [★](https://he
 * [composer](https://getcomposer.org)
 * [image "timonier/php"](https://hub.docker.com/r/timonier/php/)
 * [just-containers/s6-overlay](https://github.com/just-containers/s6-overlay)
+* [jwilder/dockerize](https://github.com/jwilder/dockerize)
 * [melody](http://melody.sensiolabs.org)
 * [mounting nfs shares inside docker container](https://stackoverflow.com/questions/39922161/mounting-nfs-shares-inside-docker-container)
 * [php](http://www.php.net/)

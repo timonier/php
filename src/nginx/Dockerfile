@@ -18,13 +18,11 @@ RUN set -e -u -x \
 \
     # Install dockerize
 \
-    && export $(curl --location "https://github.com/timonier/version-lister/raw/generated/jwilder/dockerize/latest" | xargs) \
-    && curl --location "${DOCKERIZE_RELEASE}" | tar --directory /tmp --extract --gzip \
-    && mv /tmp/dockerize /usr/bin/dockerize \
+    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dockerize/installer" | bash -s -- install \
 \
     # Install dumb-entrypoint
 \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/s6-overlay/installer" | sh -s -- install \
+    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/s6-overlay/installer" | bash -s -- install \
 \
     # Install melody
 \
