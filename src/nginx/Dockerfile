@@ -1,7 +1,7 @@
 FROM php:7.2-fpm-alpine
 
 LABEL \
-    maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
+    maintainer="Morgan AUCHEDE <morgan.auchede@gmail.com>"
 
 ENV \
     COMPOSER_ALLOW_SUPERUSER=1 \
@@ -18,11 +18,11 @@ RUN set -e -u -x \
 \
     # Install dockerize
 \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dockerize/installer" | bash -s -- install \
+    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/dockerize/installer" | bash -s -- install \
 \
     # Install dumb-entrypoint
 \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/s6-overlay/installer" | bash -s -- install \
+    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/s6-overlay/installer" | bash -s -- install \
 \
     # Install melody
 \
@@ -37,7 +37,7 @@ RUN set -e -u -x \
     && usermod --home /var/cache/nginx nginx \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && curl --location "https://github.com/timonier/nginx/raw/generated/rootfs.tar.gz" | tar --directory / --extract --gzip \
+    && curl --location "https://gitlab.com/timonier/nginx/raw/generated/rootfs.tar.gz" | tar --directory / --extract --gzip \
 \
     # Install php-ext-apfd
 \
@@ -123,6 +123,13 @@ RUN set -e -u -x \
 \
     && pecl install redis \
     && docker-php-ext-enable redis \
+\
+    # Install php-ext-uuid
+\
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_UUID util-linux-dev \
+    && apk add --no-cache --no-progress libuuid \
+    && pecl install uuid \
+    && docker-php-ext-enable uuid \
 \
     # Install php-ext-xdebug
 \

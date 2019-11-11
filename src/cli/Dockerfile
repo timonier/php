@@ -1,7 +1,7 @@
 FROM php:7.2-cli-alpine
 
 LABEL \
-    maintainer="Morgan Auchede <morgan.auchede@gmail.com>"
+    maintainer="Morgan AUCHEDE <morgan.auchede@gmail.com>"
 
 ENV \
     COMPOSER_ALLOW_SUPERUSER=1
@@ -15,8 +15,8 @@ RUN set -e -u -x \
 \
     # Install dumb-entrypoint
 \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/dumb-entrypoint/installer" | bash -s -- install \
-    && curl --location "https://github.com/timonier/dumb-entrypoint/raw/master/src/gosu/installer" | bash -s -- install \
+    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/dumb-entrypoint/installer" | bash -s -- install \
+    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/gosu/installer" | bash -s -- install \
 \
     # Install melody
 \
@@ -107,6 +107,13 @@ RUN set -e -u -x \
 \
     && pecl install redis \
     && docker-php-ext-enable redis \
+\
+    # Install php-ext-uuid
+\
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_UUID util-linux-dev \
+    && apk add --no-cache --no-progress libuuid \
+    && pecl install uuid \
+    && docker-php-ext-enable uuid \
 \
     # Install php-ext-xdebug
 \
