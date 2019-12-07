@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:7.4-fpm-alpine
 
 LABEL \
     maintainer="Morgan AUCHEDE <morgan.auchede@gmail.com>"
@@ -57,7 +57,7 @@ RUN set -e -u -x \
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_GD freetype-dev libjpeg-turbo-dev libpng-dev \
     && apk add --no-cache --no-progress freetype libjpeg-turbo libpng \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
 \
     # Install php-ext-gmp
@@ -129,6 +129,8 @@ RUN set -e -u -x \
 \
     # Install php-ext-zip
 \
+    && apk add --no-cache --no-progress --virtual BUILD_DEPS_PHP_ZIP libzip-dev \
+    && apk add --no-cache --no-progress libzip \
     && docker-php-ext-install zip \
 \
     # Install php-cs-fixer
@@ -138,7 +140,7 @@ RUN set -e -u -x \
 \
     # Clean
 \
-    && apk del --no-progress BUILD_DEPS BUILD_DEPS_PHP_AMQP BUILD_DEPS_PHP_GD BUILD_DEPS_PHP_GMP BUILD_DEPS_PHP_GNUPG BUILD_DEPS_PHP_INTL BUILD_DEPS_PHP_PGSQL BUILD_DEPS_PHP_XML \
+    && apk del --no-progress BUILD_DEPS BUILD_DEPS_PHP_AMQP BUILD_DEPS_PHP_GD BUILD_DEPS_PHP_GMP BUILD_DEPS_PHP_GNUPG BUILD_DEPS_PHP_INTL BUILD_DEPS_PHP_PGSQL BUILD_DEPS_PHP_XML BUILD_DEPS_PHP_ZIP \
     && rm -f -r /tmp/* /usr/local/etc/php-fpm.d/* /var/www
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
