@@ -1,0 +1,19 @@
+#!/bin/bash
+shopt -s globstar
+
+if [ -n "${NGINX_GID}" ]; then
+    groupmod --gid "${NGINX_GID}" --non-unique nginx
+fi
+
+if [ -n "${NGINX_UID}" ]; then
+    usermod --non-unique --uid "${NGINX_UID}" nginx
+fi
+
+mkdir -p /run/nginx /var/cache/nginx
+
+if [ -f /etc/nginx/nginx.conf ]; then
+    dockerize -delims '⁅⁅:⁆⁆' -template /etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+fi
+for FILE in /etc/nginx/conf.d/*; do
+    dockerize -delims '⁅⁅:⁆⁆' -template "${FILE}":"${FILE}"
+done

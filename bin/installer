@@ -23,22 +23,16 @@ case "$1" in
         mkdir -p "${INSTALL_DIRECTORY}"
 
         if [ -t 0 ]; then
-            cp cmd "${INSTALL_DIRECTORY}"/composer
-            cp cmd "${INSTALL_DIRECTORY}"/melody
             cp cmd "${INSTALL_DIRECTORY}"/php
-            cp cmd "${INSTALL_DIRECTORY}"/php-cs-fixer
         else
-            curl --location --output "${INSTALL_DIRECTORY}"/composer "https://gitlab.com/timonier/php/raw/master/bin/cmd"
-            curl --location --output "${INSTALL_DIRECTORY}"/melody "https://gitlab.com/timonier/php/raw/master/bin/cmd"
-            curl --location --output "${INSTALL_DIRECTORY}"/php "https://gitlab.com/timonier/php/raw/master/bin/cmd"
-            curl --location --output "${INSTALL_DIRECTORY}"/php-cs-fixer "https://gitlab.com/timonier/php/raw/master/bin/cmd"
+            curl --location --output "${INSTALL_DIRECTORY}"/php "https://github.com/timonier/php/raw/master/bin/cmd"
         fi
 
-        chmod +x "${INSTALL_DIRECTORY}"/composer "${INSTALL_DIRECTORY}"/melody "${INSTALL_DIRECTORY}"/php "${INSTALL_DIRECTORY}"/php-cs-fixer
+        chmod +x "${INSTALL_DIRECTORY}"/php
         ;;
 
     uninstall)
-        rm -f "${INSTALL_DIRECTORY}"/composer "${INSTALL_DIRECTORY}"/melody "${INSTALL_DIRECTORY}"/php "${INSTALL_DIRECTORY}"/php-cs-fixer
+        rm -f "${INSTALL_DIRECTORY}"/php
         ;;
 
     *)

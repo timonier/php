@@ -2,6 +2,8 @@
 
 The PHP Interpreter
 
+If you like / use this project, please let me known by adding a ★ on the [GitHub repository](https://github.com/timonier/php).
+
 ## Installation
 
 ### cli
@@ -17,7 +19,7 @@ sudo bin/installer install
 
 # Use remote installation
 
-curl --location "https://gitlab.com/timonier/php/raw/master/bin/installer" | sudo sh -s -- install
+curl --location "https://github.com/timonier/php/raw/master/bin/installer" | sudo sh -s -- install
 ```
 
 __Note 1__: If you do not define `INSTALL_DIRECTORY`, `installer` will use in `/usr/local/bin`.
@@ -149,29 +151,12 @@ docker run --interactive --publish 80:80 --read-only --rm --tmpfs /run:exec --tm
 docker run --interactive --publish 80:80 --read-only --rm --tmpfs /run:exec --tmpfs /tmp --tmpfs /var/cache/nginx --tty --volume /etc --volume /home/www-data timonier/php:nginx
 ```
 
-## Contributing
-
-1. Fork it.
-2. Create your branch: `git checkout -b my-new-feature`.
-3. Commit your changes: `git commit -am 'Add some feature'`.
-4. Push to the branch: `git push origin my-new-feature`.
-5. Submit a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/).
-
-__Note 1__: [GitHub repository](https://github.com/timonier/php) is a mirror. [Merge request](https://docs.gitlab.com/ee/user/project/merge_requests/) has to be submitted to the [GitLab repository](https://gitlab.com/timonier/php).
-
-__Note 2__: Use the script `bin/build-images` to test your modifications locally.
-
-If you like / use this project, please let me known by adding a [★](https://help.github.com/articles/about-stars/) on the [GitHub repository](https://github.com/timonier/php) or on the [GitLab repository](https://gitlab.com/timonier/php).
-
 ## Links
 
-* [composer](https://getcomposer.org)
 * [image "timonier/php"](https://hub.docker.com/r/timonier/php/)
 * [just-containers/s6-overlay](https://github.com/just-containers/s6-overlay)
 * [jwilder/dockerize](https://github.com/jwilder/dockerize)
-* [melody](http://melody.sensiolabs.org)
 * [mounting nfs shares inside docker container](https://stackoverflow.com/questions/39922161/mounting-nfs-shares-inside-docker-container)
 * [php](http://www.php.net/)
-* [php-cs-fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 * [set up docker for mac with native nfs](https://medium.com/@sean.handley/how-to-set-up-docker-for-mac-with-native-nfs-145151458adc)
-* [timonier/dumb-entrypoint](https://gitlab.com/timonier/dumb-entrypoint)
+* [timonier/php](https://github.com/timonier/php)

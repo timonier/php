@@ -4,7 +4,6 @@ LABEL \
     maintainer="Morgan AUCHEDE <morgan.auchede@gmail.com>"
 
 ENV \
-    COMPOSER_ALLOW_SUPERUSER=1 \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_KEEP_ENV=1 \
     S6_READ_ONLY_ROOT=1
@@ -14,20 +13,12 @@ RUN set -e -u -x \
     # Install packages
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS ${PHPIZE_DEPS} \
-    && apk add --no-cache --no-progress bash ca-certificates git openssh-client shadow \
+    && apk add --no-cache --no-progress bash ca-certificates git openssh-client shadow tzdata \
 \
     # Install dockerize
 \
-    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/dockerize/installer" | bash -s -- install \
-\
-    # Install dumb-entrypoint
-\
-    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/s6-overlay/installer" | bash -s -- install \
-\
-    # Install melody
-\
-    && curl --location --output /usr/local/bin/melody "http://get.sensiolabs.org/melody.phar" \
-    && chmod +x /usr/local/bin/melody \
+    && curl --location "https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz" | tar --directory /usr/local/bin --extract --gzip \
+    && chmod +x /usr/local/bin/dockerize \
 \
     # Install nginx
 \
@@ -37,7 +28,6 @@ RUN set -e -u -x \
     && usermod --home /var/cache/nginx nginx \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && curl --location "https://gitlab.com/timonier/nginx/raw/generated/rootfs.tar.gz" | tar --directory / --extract --gzip \
 \
     # Install php-ext-apfd
 \
@@ -66,6 +56,10 @@ RUN set -e -u -x \
     && curl --location --user-agent Docker "https://blackfire.io/api/v1/releases/probe/php/alpine/amd64/${PHP_VERSION}" | tar --directory /tmp --extract --gzip \
     && mv /tmp/blackfire-*.so "$(php -r "echo ini_get('extension_dir');")/blackfire.so" \
     && docker-php-ext-enable blackfire \
+\
+    # Install php-ext-exif
+\
+    && docker-php-ext-install exif \
 \
     # Install php-ext-gd
 \
@@ -147,17 +141,18 @@ RUN set -e -u -x \
     && apk add --no-cache --no-progress libzip \
     && docker-php-ext-install zip \
 \
-    # Install php-cs-fixer
+    # Install s6-overlay
 \
-    && curl --location --output /usr/local/bin/php-cs-fixer "http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar" \
-    && chmod +x /usr/local/bin/php-cs-fixer \
+    && curl "https://keybase.io/justcontainers/key.asc" | gpg --import \
+    && curl --location --output /tmp/s6-overlay.tar.gz "https://github.com/just-containers/s6-overlay/releases/download/v2.1.0.0/s6-overlay-amd64.tar.gz" \
+    && curl --location --output /tmp/s6-overlay.tar.gz.sig "https://github.com/just-containers/s6-overlay/releases/download/v2.1.0.0/s6-overlay-amd64.tar.gz.sig" \
+    && gpg --verify /tmp/s6-overlay.tar.gz.sig /tmp/s6-overlay.tar.gz \
+    && tar --directory / --extract --file /tmp/s6-overlay.tar.gz --gzip \
 \
     # Clean
 \
     && apk del --no-progress BUILD_DEPS BUILD_DEPS_PHP_AMQP BUILD_DEPS_PHP_GD BUILD_DEPS_PHP_GMP BUILD_DEPS_PHP_GNUPG BUILD_DEPS_PHP_INTL BUILD_DEPS_PHP_PGSQL BUILD_DEPS_PHP_XML BUILD_DEPS_PHP_ZIP \
-    && rm -f -r /tmp/* /usr/local/etc/php-fpm.d/* /var/www
-
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+    && rm -f -r /root/.gnupg /tmp/* /usr/local/etc/php-fpm.d/* /var/www
 
 COPY rootfs/ /
 

@@ -3,25 +3,12 @@ FROM php:7.4-cli-alpine
 LABEL \
     maintainer="Morgan AUCHEDE <morgan.auchede@gmail.com>"
 
-ENV \
-    COMPOSER_ALLOW_SUPERUSER=1
-
 RUN set -e -u -x \
 \
     # Install packages
 \
     && apk add --no-cache --no-progress --virtual BUILD_DEPS ${PHPIZE_DEPS} \
-    && apk add --no-cache --no-progress bash ca-certificates git openssh-client \
-\
-    # Install dumb-entrypoint
-\
-    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/dumb-entrypoint/installer" | bash -s -- install \
-    && curl --location "https://gitlab.com/timonier/dumb-entrypoint/raw/master/src/gosu/installer" | bash -s -- install \
-\
-    # Install melody
-\
-    && curl --location --output /usr/local/bin/melody "http://get.sensiolabs.org/melody.phar" \
-    && chmod +x /usr/local/bin/melody \
+    && apk add --no-cache --no-progress bash ca-certificates git openssh-client tzdata \
 \
     # Install php-ext-apfd
 \
@@ -50,6 +37,10 @@ RUN set -e -u -x \
     && curl --location --user-agent Docker "https://blackfire.io/api/v1/releases/probe/php/alpine/amd64/${PHP_VERSION}" | tar --directory /tmp --extract --gzip \
     && mv /tmp/blackfire-*.so "$(php -r "echo ini_get('extension_dir');")/blackfire.so" \
     && docker-php-ext-enable blackfire \
+\
+    # Install php-ext-exif
+\
+    && docker-php-ext-install exif \
 \
     # Install php-ext-gd
 \
@@ -131,16 +122,7 @@ RUN set -e -u -x \
     && apk add --no-cache --no-progress libzip \
     && docker-php-ext-install zip \
 \
-    # Install php-cs-fixer
-\
-    && curl --location --output /usr/local/bin/php-cs-fixer "http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar" \
-    && chmod +x /usr/local/bin/php-cs-fixer \
-\
     # Clean
 \
     && apk del --no-progress BUILD_DEPS BUILD_DEPS_PHP_AMQP BUILD_DEPS_PHP_GD BUILD_DEPS_PHP_GMP BUILD_DEPS_PHP_GNUPG BUILD_DEPS_PHP_INTL BUILD_DEPS_PHP_PGSQL BUILD_DEPS_PHP_XML BUILD_DEPS_PHP_ZIP \
     && rm -f -r /tmp/*
-
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-
-ENTRYPOINT [ "dumb-entrypoint" ]

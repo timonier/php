@@ -1,0 +1,37 @@
+name: 'CI / CD'
+
+on:
+    pull_request:
+    push:
+    schedule:
+        - cron:  '0 1 * * *'
+
+jobs:
+
+    default:
+        env:
+            GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        runs-on: 'ubuntu-latest'
+        steps:
+            - uses: 'actions/checkout@v1'
+            - name: '[CI] Build Docker images'
+              run: |
+                  set -e -u -x
+                  docker build --tag timonier/php:cli-"${GITHUB_SHA}" src/cli
+                  docker build --tag timonier/php:fpm-"${GITHUB_SHA}" src/fpm
+                  docker build --tag timonier/php:nginx-"${GITHUB_SHA}" src/nginx
+            - name: '[CD] Build Docker images'
+              if: 'github.event_name == ''push'' && github.ref == ''refs/heads/master'' && github.repository == ''timonier/php'''
+              run: |
+                  set -e -u -x
+                  docker build --tag timonier/php:cli src/cli
+                  docker build --tag timonier/php:fpm src/fpm
+                  docker build --tag timonier/php:nginx src/nginx
+            - name: '[CD] Push Docker images'
+              if: 'github.event_name == ''push'' && github.ref == ''refs/heads/master'' && github.repository == ''timonier/php'''
+              run: |
+                  set -e -u -x
+                  echo '${{ secrets.DOCKER_HUB_PASSWORD }}' | docker login --username '${{ secrets.DOCKER_HUB_USERNAME }}' --password-stdin
+                  docker push timonier/php:cli
+                  docker push timonier/php:fpm
+                  docker push timonier/php:nginx
